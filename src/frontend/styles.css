@@ -1,0 +1,142 @@
+:root {
+  color-scheme: light dark;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: radial-gradient(circle at top, #3f87ff 0%, #1d1f2f 55%, #0b0b12 100%);
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+}
+
+.desktop-shell {
+  width: min(960px, 90vw);
+  background: rgba(15, 17, 30, 0.85);
+  backdrop-filter: blur(12px);
+  border-radius: 24px;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+  color: #f5f7ff;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.desktop-shell__header {
+  padding: 32px 40px 16px 40px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.desktop-shell__header h1 {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.desktop-shell__subtitle {
+  margin: 8px 0 0;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.desktop-shell__status {
+  display: flex;
+  gap: 12px;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.desktop-shell__content {
+  padding: 0 40px 32px 40px;
+  overflow-y: auto;
+}
+
+.desktop-shell__section + .desktop-shell__section {
+  margin-top: 32px;
+}
+
+.desktop-shell__section h2 {
+  margin: 0 0 16px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.desktop-shell__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.desktop-shell__tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  color: inherit;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  text-align: left;
+}
+
+.desktop-shell__tile:hover:not(:disabled),
+.desktop-shell__tile:focus-visible {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 30px rgba(0, 0, 0, 0.35);
+  background: rgba(66, 119, 255, 0.2);
+  outline: none;
+}
+
+.desktop-shell__tile:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.desktop-shell__tile-icon {
+  font-size: 2.4rem;
+}
+
+.desktop-shell__tile-label {
+  font-size: 1.05rem;
+  font-weight: 500;
+}
+
+.desktop-shell__tile-description {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.desktop-shell__footer {
+  padding: 16px 40px 32px 40px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.9rem;
+}
+
+@media (max-width: 720px) {
+  .desktop-shell {
+    width: min(100%, 600px);
+  }
+
+  .desktop-shell__header,
+  .desktop-shell__content,
+  .desktop-shell__footer {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  .desktop-shell__status {
+    flex-wrap: wrap;
+  }
+}
