@@ -1,3 +1,4 @@
 node_modules/
 dist/
 .DS_Store
+gtk/gtk_desktop

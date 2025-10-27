@@ -2,6 +2,7 @@ import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import os from 'os';
+import { existsSync } from 'node:fs';
 import { DesktopIPC, IPCInboundMessage } from './ipc.js';
 
 const app = express();
@@ -10,7 +11,25 @@ const ipc = new DesktopIPC();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const publicDir = path.join(__dirname, 'public');
+
+function resolvePublicDir(): string | null {
+  const candidates = [
+    path.join(__dirname, 'public'),
+    path.join(__dirname, 'frontend'),
+    path.join(process.cwd(), 'dist', 'public'),
+    path.join(process.cwd(), 'src', 'frontend')
+  ];
+
+  for (const candidate of candidates) {
+    if (existsSync(path.join(candidate, 'index.html'))) {
+      return candidate;
+    }
+  }
+
+  return null;
+}
+
+const publicDir = resolvePublicDir();
 
 interface DesktopApp {
   id: string;
@@ -52,7 +71,11 @@ const desktopApps: DesktopApp[] = [
 ];
 
 app.use(express.json());
-app.use(express.static(publicDir));
+if (publicDir) {
+  app.use(express.static(publicDir));
+} else {
+  console.warn('Static assets directory not found. Run "npm run build:frontend" to generate the React bundle.');
+}
 
 app.get('/api/apps', (_req, res) => {
   res.json({ apps: desktopApps });
@@ -81,9 +104,15 @@ app.post('/api/apps/:id/launch', (req, res) => {
   res.json({ status: 'ok', message: `${appInfo.name} requested` });
 });
 
-app.get('*', (_req, res) => {
-  res.sendFile(path.join(publicDir, 'index.html'));
-});
+if (publicDir) {
+  app.get('*', (_req, res) => {
+    res.sendFile(path.join(publicDir, 'index.html'));
+  });
+} else {
+  app.get('*', (_req, res) => {
+    res.status(503).send('Frontend bundle not found. Run "npm run build:frontend" and restart the server.');
+  });
+}
 
 ipc.on('message', (message: IPCInboundMessage) => {
   if (message.type === 'launch-app') {
